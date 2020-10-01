@@ -1,0 +1,159 @@
+---
+title: "Basics of reading in and working with text"
+author: "Laura Wolton"
+date: "10/1/2020"
+output: powerpoint_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Today's Tasks
+
+- Install packages
+- Check and set directories
+- Read in a file
+- Look for strings
+- Work with regex
+
+## Install a few packages for today
+```{r install, echo = TRUE}
+#you only need to install once but you need to call your directories every time
+# install.packages(stringr)
+
+#now you need to tell R you are going to use those libraries
+library(stringr)
+
+```
+
+## Check your directory
+```{r setdir, echo = TRUE}
+#get the working directory
+getwd()
+#if you want to change it set a new one 
+#you can directly input a directory
+datadir<-"C:/Users/vegan/Documents/R_dir/"
+# you can paste strings together to create another
+datadir<-paste(getwd(),"/data/",sep="")
+```
+## To set a Directory
+
+There are two ways:
+
+- Under Tools you can set it in Project Options or Global options
+- setwd("C:/Users/vegan/Documents/R_dir/")
+- Remember to change to forward slashes if you copy from a PC!
+
+## Now list the files
+
+```{r listfiles, echo = TRUE}
+#now list the files
+dfiles<-list.files(datadir,pattern = "\\.txt$",include.dirs=TRUE,full.names=TRUE)
+dfiles[1:3]
+```
+## Let's read in the files
+
+```{r read in one file,echo=TRUE}
+#this example is for ascii files
+#pdfs,html or excel require different reading function
+  
+txt<-readLines(dfiles[1])
+head(txt)
+
+```
+## Investigate the file
+```{r find out, echo=TRUE}
+#these are separated by line breaks
+length(txt)
+#this is a simple vector
+#if you don't know there are ways to check the object type
+is.list(txt)
+is.data.frame(txt)
+str(txt)
+#try looking at different lines using indices
+txt[20]
+```
+
+## Let's Look for words
+
+```{r search for words, echo=TRUE}
+#the grep command finds indices of sentences that have a search term
+grep("lives",txt,ignore.case=TRUE)
+#these indcies can be used to inspect those sentences
+txt[grep("lives",txt,ignore.case=TRUE)]
+```
+## What if we want to look for multiple words?
+
+```{r search multi, echo=TRUE}
+# use a pipe to say OR
+wtxt<-txt[grep("lives | racism",txt,ignore.case=TRUE)]
+length(wtxt)
+```
+## What if we want to look for unknown words?
+
+```{r search for unknown, echo=TRUE}
+# use a pipe to say OR
+wtxt<-txt[grep("[A-Z][A-Z][A-Z]\\s",txt,ignore.case=TRUE)]
+wtxt[1]
+#regex is the keyword
+#it takes some real time to construct a good regex statement
+#let's try another
+nums<-txt[grep("20[0-9][0-9]\\s",txt,ignore.case=TRUE)]
+
+```
+## Resources for building Regex
+
+THese are two great resources for regex in R
+CHeat sheet:
+https://rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf
+Regex tester for R
+https://spannbaueradam.shinyapps.io/r_regex_tester/
+
+## Two backslashes for punctuation 
+
+```{r backslash, echo=TRUE}
+#can use str_extract or str_extract_all to see what you are extracting
+unlist(str_extract_all(txt,"\\.\\s[A-Z]\\w+\\s"))
+
+
+```
+## Substitute
+
+```{r change, echo=TRUE}
+#can use gsub or str_replace or str_replace_all to see what you are extracting
+# str_replace_all(txt,"\\.\\s[A-Z]\\w+\\s","\\!\\!\\!")
+#but that command didn't save it, it just showed you
+#try saving it to a new vector
+rtxt<-str_replace_all(txt,"\\.\\s[A-Z]\\w+\\s","\\!\\!\\!")
+rtxt[21]
+#or use 
+rtxt<-gsub("lives","important lives",txt,ignore.case=TRUE)
+rtxt[3]
+```
+## try some more
+
+```{r changemore, echo=TRUE}
+#can use gsub or str_replace or str_replace_all to see what you are extracting
+# str_replace_all(txt,"\\.\\s[A-Z]\\w+\\s","\\!\\!\\!")
+#but that command didn't save it, it just showed you
+#or use 
+rtxt<-gsub("[[:upper:]]","\\?",txt)
+rtxt[3]
+#say we want to remove a colon
+txt[35]
+str_remove_all(txt[35],"\\:")
+```
+## Whitespace
+
+```{r whitespace, echo=TRUE}
+#can use gsub or str_replace or str_replace_all to see what you are extracting
+# str_replace_all(txt,"\\.\\s[A-Z]\\w+\\s","\\!\\!\\!")
+#but that command didn't save it, it just showed you
+#or use 
+txsent<-" this is a sentence with extra whitespace   "
+str_trim(txsent)
+#can nest these kinds of things for efficiency
+paste(str_trim(txsent),".",sep="")
+
+```
