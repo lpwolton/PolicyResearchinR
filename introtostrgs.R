@@ -54,7 +54,7 @@ wtxt<-txt[grep("lives | racism",txt,ignore.case=TRUE)]
 length(wtxt)
 
 # can find unknown patterns
-wtxt<-txt[grep("[A-Z][A-Z][A-Z]\\s",txt,ignore.case=TRUE)]
+wtxt<-txt[grep("[A-Z][A-Z][A-Z]\\s",txt)]
 wtxt[1]
 #regex is the keyword
 #it takes some real time to construct a good regex statement
