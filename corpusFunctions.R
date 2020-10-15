@@ -1,7 +1,7 @@
 #+
 #corpusFunctions.R
 # Laura Wolton
-#functions we may need for working with corpuses (corpora)
+#functions we may need for working with corpus(corpora?)
 #-
 
 #this function will remove stopwords, extra space, and puncutation
@@ -20,7 +20,7 @@ cleanCorpus <- function(corp){
   # Remove your own stop word
   # specify your stopwords as a character vector
   corp <- tm_map(corp, removeWords, c("will", "get","must","need","new",
-      "also","said","say","can","make","I'll")) 
+      "also","said","say","can","make","I'll","and")) 
   # Remove punctuations
   corp <- tm_map(corp, removePunctuation)
   # Eliminate extra white spaces

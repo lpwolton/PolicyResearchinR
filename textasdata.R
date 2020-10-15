@@ -3,6 +3,7 @@
 # Oct. 8, 2020
 # 
 # basics on Text analysis
+# a few updates 10/14/20
 #Laura Wolton
 #-
 
@@ -14,20 +15,20 @@
 #create a word frequency list
 #
 #
-#
 
 #uncomment these and run them if you have never installed these
-#install.packages("readxl")
 #install.packages("stringr")
-#install.packages("dplyr")
-#install.packages("tm")
-#install.packages("SnowballC")
-#install.packages("wordcloud")
-#install.packages("RColorBrewer")
-#install.packages("SentimentAnalysis")
-#install.packages("fBasics")
-#install.packages("lexRankr")
-library(readxl)
+# install.packages("dplyr")
+# install.packages("tm")
+# install.packages("SnowballC")
+# install.packages("wordcloud")
+# install.packages("RColorBrewer")
+# install.packages("SentimentAnalysis")
+# install.packages("fBasics")
+# install.packages("lexRankr")
+# install.packages("ggplot2")
+# install.packages("viridis")
+# install.packages("NLP")
 library(stringr)
 library(dplyr)
 library(tm)
@@ -38,6 +39,8 @@ library(SentimentAnalysis)
 library(fBasics)
 library(lexRankr)
 library(ggplot2)
+library(NLP)
+library(viridis)
 
 #get the working directory
 getwd()
@@ -48,9 +51,8 @@ datadir<-paste(getwd(),"/data/",sep="")
 #create an object with the list of files
 dfiles<-list.files(datadir,include.dirs=TRUE,full.names=TRUE,pattern=".txt")
 
-
 ####Read the files into a dataframe########
-#create an empty date frame the length of the 
+#create an empty date frame the length of the number of files 
 text_df<-data.frame(matrix(nrow=length(dfiles), ncol=2))
 colnames(text_df)<-c("title","text")
 for (j in 1:length(dfiles)){
@@ -60,7 +62,7 @@ for (j in 1:length(dfiles)){
   #remove all the empty lines
   raw_ascii<-raw_ascii[which(raw_ascii!="")]
   
-  #save the title in the first column of the data
+  #save the title in the first column of the data frame
   text_df$title[j]<-raw_ascii[1]
   
   #I decided to clean my files within the reading for loop
@@ -70,7 +72,7 @@ for (j in 1:length(dfiles)){
   botind<-min(grep("\\w+\\.\\w+\\@\\w+\\.\\w+|Classification",raw_ascii))-1
   
   #store the text as a string in the second column
-  text_df$text[j]<-paste(unlist(raw_ascii[startind:botind]),collapse='')
+  text_df$text[j]<-paste(unlist(raw_ascii[startind:botind]),collapse=' ')
 }
 ####Now all our text is stored in a dataframe####
 View(text_df)
@@ -109,6 +111,8 @@ barplot(wf[1:20,]$freq, las = 2, names.arg = wf[1:20,]$word,
 #so this is not entirely meaningful, but you could 
 #analyze the sentimteent of each whole article text
 text_sen<-unnest_sentences(text_df,sents,text,doc_id=title)
+
+
 sentres<-analyzeSentiment(text_sen$sents)
 
 #I usually work with SentimentGI values
@@ -123,8 +127,9 @@ text_sen$wc<-sentres$WordCount
 
 #these are some things we can do statistics on sentiment or word count
 #comes from fBasics package
-summary(mean(text_sen$senti))
-summary(mean(text_sen$wc))
+mean(text_sen$senti,na.rm=TRUE)
+summary(text_sen$senti,na.rm=TRUE)
+summary(text_sen$wc)
 
   ggplot(text_sen, aes(x=title, y=senti, fill=title)) +
   geom_violin(width=1.) +
