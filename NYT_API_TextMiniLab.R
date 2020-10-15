@@ -21,7 +21,6 @@ library(SentimentAnalysis)
 #it tells the API what you are allowed to do and what permissions you have
 
 NYTIMES_KEY="YourKeyHere" 
-NYTIMES_KEY="Ng2ZBU18PAAxkGZIlWQhCFYacAqvCJAH"
 
 ###generally following https://www.storybench.org/working-with-the-new-york-times-api-in-r/
 #the shape of your call is very important
