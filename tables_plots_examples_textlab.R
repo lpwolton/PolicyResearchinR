@@ -1,7 +1,8 @@
 #+
 # tables_plots_examples_textlab.R
-#  
 #
+#  Laura Wolton
+# last updated 10/29/20
 #
 #-
 #load fonts
@@ -59,7 +60,8 @@ library(gridExtra)
 
 # Make 3 simple graphics:
 g1 <- ggplot(mtcars, aes(x=qsec)) + geom_density(fill="slateblue")
-g2 <- ggplot(mtcars, aes(x=drat, y=qsec, color=cyl)) + geom_point(size=5) + theme(legend.position="none")
+g2 <- ggplot(mtcars, aes(x=drat, y=qsec, color=cyl)) +
+  geom_point(size=5) + theme(legend.position="none")
 g3 <- ggplot(mtcars, aes(x=factor(cyl), y=qsec, fill=cyl)) + geom_boxplot() + theme(legend.position="none")
 g4 <- ggplot(mtcars , aes(x=factor(cyl), fill=factor(cyl))) +  geom_bar()
 
@@ -78,6 +80,7 @@ library(tidyverse)
 library(hrbrthemes)
 library(babynames)
 library(viridis)
+library(dplyr)
 
 # Load dataset from github
 data <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered.csv", header=T)
@@ -93,7 +96,6 @@ don %>%
   ggplot( aes(x=year, y=n, group=name, fill=name)) +
   geom_area() +
   scale_fill_viridis(discrete = TRUE) +
-  theme(legend.position="none") +
   ggtitle("Popularity of American names in the previous 30 years") +
   theme_ipsum() +
   theme(
@@ -103,7 +105,7 @@ don %>%
     plot.title = element_text(size=13)
   ) +
   facet_wrap(~name, scale="free_y") +
-  theme(legend.position="right")
+  theme(legend.position="bottom")
 
 #### adding other color palettes
 library(RColorBrewer)
@@ -112,12 +114,20 @@ library(RColorBrewer)
 display.brewer.all()
 display.brewer.pal(n = 8, name = 'Dark2')
 j_brew_colors <- brewer.pal(n = 8, name = "Dark2")
-###
+###can use single colors
+ggplot(mtcars, aes(x=drat)) +
+       geom_density(
+             color=j_brew_colors[3],
+             fill=j_brew_colors[2],
+             size=2
+         )
+#or you can call the whole palette
 p <- ggplot(iris,
             aes(x=Sepal.Length, y=Sepal.Width, color=Species)) +
   geom_point(size=6)
+p + scale_color_brewer(palette = "Dark2")
 
-p + scale_color_brewer(palette = "PuOr")
+
 
 
 
